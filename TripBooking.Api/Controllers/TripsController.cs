@@ -20,9 +20,16 @@ public class TripsController : ControllerBase
     }
 
     [HttpGet]
-    public IAsyncEnumerable<TripListItemModel> GetTripsListAsync()
+    public IAsyncEnumerable<TripListItemModel> GetTripsListAsync([FromQuery] string? country)
     {
-        return _tripContext.Trips
+        IQueryable<Trip> queryable = _tripContext.Trips;
+
+        if (!string.IsNullOrEmpty(country))
+        {
+            queryable = queryable.Where(x => x.Country == country);
+        }
+
+        return queryable
             .Select(x => new TripListItemModel
             {
                 Id = x.Id,
