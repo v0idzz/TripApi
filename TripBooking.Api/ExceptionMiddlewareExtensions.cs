@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using TripBooking.Api.Models;
@@ -16,6 +17,8 @@ public static class ExceptionMiddlewareExtensions
 
                 if (exceptionHandlerFeature.Error is BusinessRuleViolationException businessException)
                 {
+                    context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+
                     await context.Response.WriteAsJsonAsync(new ErrorModel(businessException.Message));
                 }
             }));
